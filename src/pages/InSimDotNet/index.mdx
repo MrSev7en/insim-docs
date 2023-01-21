@@ -8,9 +8,8 @@ import { Callout } from 'nextra-theme-docs'
 # InSimDotNet
 
 InSimDotNet é uma livraria compatível com o protocolo do InSim.
-Ela permite a comunicação com o jogo, através do envio de [pacotes](/packets).
-
-Você pode conferir o repositório oficial dela [clicando aqui](https://github.com/alexmcbride/insimdotnet).
+Ela permite a comunicação com o jogo, através do envio de [pacotes](/packets).\
+Você pode conferir o repositório oficial no GitHub [clicando aqui](https://github.com/alexmcbride/insimdotnet).
 
 ## Criando seu primeiro InSim
 
@@ -31,8 +30,7 @@ Procure pela opção "Aplicação de Console (.NET Framework)", selecione o dire
 
 ## Após a criação do projeto
 
-Dentro do Visual Studio, procure pelo arquivo "Program.cs", ele será o arquivo responsável pelo código inicial do seu InSim.
-
+Dentro do Visual Studio, procure pelo arquivo "Program.cs", ele será o arquivo responsável pelo código inicial do seu InSim.\
 Dentro dele provavelmente você encontrará um código semelhante à esse:
 
 ```csharp filename="Program.cs" copy
@@ -86,16 +84,18 @@ insim.Initialize(new InSimSettings {
     Host = "127.0.0.1",
     Port = 29999,
     Admin = "",
+    Prefix = '!',
+    IName = 'insim'
 });
 
 insim.Send("/msg Hello, InSim!");
 ```
 
-**Host** é o endereço IP do servidor em que você quer iniciar o InSim.
-
-**Port** é a porta do InSim para conexão (a porta do InSim não é a mesma porta que você utiliza para ligar o servidor, geralmente ela é a porta 29999).
-
-**Admin** é a senha de administrador do servidor, esse campo não é opcional caso o seu servidor possua senha de administrador.
+**Host** é o endereço IP do servidor em que você quer iniciar o InSim.\
+**Port** é a porta do InSim para conexão (a porta do InSim não é a mesma porta que você utiliza para ligar o servidor, geralmente ela é a porta 29999).\
+**Admin** é a senha de administrador do servidor, esse campo não é opcional caso o seu servidor possua senha de administrador.\
+**Prefix** é o prefixo para a recepção dos comandos.\
+**IName** é o nome do InSim (visivel apenas para o host ou jogador local), não pode conter mais de 16 caracteres.
 
 Seu código final irá se assemelhar à esse:
 
@@ -123,6 +123,8 @@ namespace insim
                         Host = "127.0.0.1",
                         Port = 29999,
                         Admin = "",
+                        Prefix = '!',
+                        IName = 'insim'
                     });
 
                     insim.Send("/msg Hello, InSim!");

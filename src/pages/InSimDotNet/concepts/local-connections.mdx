@@ -1,0 +1,72 @@
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="warning">
+  É importante lembrar de seguir as etapas do [Nova
+  conexão](/InSimDotNet/packets/new-connection), e [Ao sair do
+  servidor](/InSimDotNet/packets/leave-connection) antes de prosseguir.
+</Callout>
+
+# Conceito de conexões locais
+
+O conceito de conexões locais é basicamente armazenar os dados temporários dos jogadores dentro do InSim, para que possam ser acessados mais tarde.
+
+## Armazenamento de conexões
+
+Crie um arquivo chamado "Connections", nele iremos lidar com as conexões locais.\
+Dentro desse arquivo, insira o código abaixo:
+
+```csharp copy
+public static Dictionary<byte, Connections> _connections = new Dictionary<byte, Connections>();
+
+public byte UCID = new byte();
+public string UName = string.Empty;
+public string PName = string.Empty;
+public bool Administrator = new bool();
+```
+
+Seu código final irá se assemelhar à esse:
+
+```csharp filename="Connections.cs" copy
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    class Connections
+    {
+        public static Dictionary<byte, Connections> _connections = new Dictionary<byte, Connections>();
+
+        public byte UCID = new byte();
+        public string UName = string.Empty;
+        public string PName = string.Empty;
+        public bool Administrator = new bool();
+    }
+}
+```
+
+## Lidando com as conexões
+
+Para utilizarmos a classe que criamos acima, **antes de tudo** precisamos inserir todos os usuários dentro dela.
+
+No arquivo "packets/IS_NCN.cs", insira o seguinte código:
+
+```csharp filename="packets/IS_NCN.cs" copy
+Connections._connections.Add(ncn.UCID, new Connections
+{
+    UCID = ncn.UCID,
+    UName = ncn.UName,
+    PName = ncn.PName,
+    Administrator = ncn.Admin
+});
+```
+
+No arquivo "packets/IS_CNL.cs", insira o seguinte código:
+
+```csharp filename="packets/IS_CNL.cs" copy
+Connections._connections.Remove(CNL.UCID);
+```
+
+Pronto! As conexões locais estão prontas para serem utilizadas!

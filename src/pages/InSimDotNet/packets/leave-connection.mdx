@@ -1,0 +1,90 @@
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="warning">
+  Essa etapa deve ser realizada simultaneamente as [Conexões
+  locais](/InSimDotNet/concepts/local-connections).
+</Callout>
+
+# Ao sair do servidor (IS_CNL)
+
+O pacote IS_CNL é referente à uma desconexão ao servidor, ou seja, sempre que um jogador sair do servidor, a função responsável por lidar com esse pacote será ativada.
+
+Esse pacote é do tipo [**receptor**](/InSimDotNet/types#receptores), ele não pode enviar dados, apenas receber.
+
+## Antes de iniciar
+
+Dentro do Visual Studio crie uma pasta chamada "packets", e dentro dela crie um arquivo de classe chamado "IS_CNL".
+
+## Criando o manipulador
+
+No arquivo criado previamente, vamos criar uma função chamada "Hook" para injetarmos todo o código de recepção dentro dela.
+
+```csharp copy
+public static void Hook(InSim insim, IS_CNL cnl)
+{
+    Console.WriteLine($"Desconexão: {cnl.UName}");
+}
+```
+
+O arquivo inteiro irá se assemelhar à esse:
+
+```csharp filename="packets/IS_CNL.cs" copy
+using InSimDotNet;
+using InSimDotNet.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    public class IS_CNL
+    {
+        public static void Hook(InSim insim, IS_CNL cnl)
+        {
+            Console.WriteLine($"Desconexão: {cnl.UName}");
+        }
+    }
+}
+```
+
+Injete o pacote dentro do InSim, seguindo o mesmo processo de [Ao entrar no servidor](/InSimDotNet/packets/new-connection#injetando-o-pacote-ao-insim).
+
+<Callout type="warning">
+  A etapa abaixo é obrigatória para o funcionamento das [Conexões
+  locais](/InSimDotNet/concets/local-connections).
+</Callout>
+
+## Aplicando as conexões locais
+
+Insira dentro do void Hook o seguinte método:
+
+```csharp copy
+Connections._connections.Remove(cnl.UCID);
+```
+
+<Callout type="info">
+  Qualquer tipo de código que você quiser utilizar no pacote CNL deverá ser
+  colocado **antes** do método acima, ou caso contrário não irá funcionar
+  corretamente.
+</Callout>
+
+## Referências da API
+
+Lista de propriedades retornadas pelo pacote.
+
+### UCID
+
+> **Tipo:** byte | número\
+> **Descrição:** ID do úsuario
+
+### Reason
+
+> **Tipo:** [Motivo de saída](/InSimDotNet/extensions/leave-reason)\
+> **Descrição:** Motivo da saída do usuário do servidor
+
+### Total
+
+> **Tipo:** byte | número\
+> **Descrição:** Total de jogadores dentro do servidor

@@ -1,0 +1,53 @@
+# Motivo de saída
+
+Essa extensão implícita aos pacotes referentes à ela.\
+Ela determina o porque o jogador saiu do servidor.
+
+## Enumerações
+
+Todas as enumerações devem ser usadas a partir da variável **LeaveReason**.\
+Por exemplo: `LeaveReason.LEAVR_DISCO`
+
+### LEAVR_DISCO
+
+O jogador saiu de forma espontânea.
+
+### LEAVR_TIMEOUT
+
+O jogador demorou muito para responder.
+
+### LEAVR_LOSTCONN
+
+O jogador perdeu a conexão com o servidor.
+
+### LEAVR_KICKED
+
+O jogador foi expulso do servidor.
+
+### LEAVR_BANNED
+
+O jogador foi banido do servidor.
+
+### LEAVR_SECURITY
+
+O jogador estava fora de sincronia com o servidor, ou estava usando algum software não permitido (cheat).
+
+### LEAVR_CPW
+
+Não foi possível verificar a proteção para a conexão desse jogador com o servidor.
+
+### LEAVR_OOS
+
+O jogador estava fora de sincronia com o servidor.
+
+### LEAVR_JOOS
+
+O jogador não conseguiu sincronizar-se com o servidor, ou está usando alguma modificação.
+
+### LEAVR_HACK
+
+O jogador estava utlizando hack.
+
+## Referências
+
+- [Ao sair do servidor](/InSimDotNet/packets/leave-connection#reason)

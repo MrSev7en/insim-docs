@@ -1,8 +1,8 @@
 import { Callout } from 'nextra-theme-docs'
 
-# Nova conexão (IS_NCN)
+# Ao entrar no servidor (IS_NCN)
 
-O pacote IS_NCN é referente à uma nova conexão no servidor, ou seja, sempre que um jogador conectar-se ao servidor, a função responsável por lidar com esse pacote será chamada.
+O pacote IS_NCN é referente à uma nova conexão no servidor, ou seja, sempre que um jogador conectar-se ao servidor, a função responsável por lidar com esse pacote será ativada.
 
 Esse pacote é do tipo [**receptor**](/InSimDotNet/types#receptores), ele não pode enviar dados, apenas receber.
 
@@ -12,7 +12,7 @@ Dentro do Visual Studio crie uma pasta chamada "packets", e dentro dela crie um 
 
 ## Criando o manipulador
 
-No arquivo IS_NCN criado préviamente, vamos criar uma função chamada "Hook" para injetarmos todo o código de recepção dentro dela.
+No arquivo criado previamente, vamos criar uma função chamada "Hook" para injetarmos todo o código de recepção dentro dela.
 
 ```csharp copy
 public static void Hook(InSim insim, IS_NCN ncn)
@@ -54,7 +54,7 @@ Voltando ao arquivo inicial "Program.cs", vamos colocar o seguinte código:
 insim.Bind<IS_NCN>(IS_NCN.Hook);
 ```
 
-Ressaltando que o método **.Bind** serve para indicar ao InSimDotNet que estamos prontos para manipular o
+Ressaltando que o método **.Bind** serve para indicar ao InSimDotNet que estamos prontos para manipular o pacote escolhido.
 
 <Callout type="warning">
   Você deve colocar o código acima **ANTES** do método **insim.Initialize**
@@ -90,3 +90,37 @@ namespace insim
     }
 }
 ```
+
+## Referências da API
+
+Lista de propriedades retornadas pelo pacote.
+
+### UCID
+
+> **Tipo:** byte | número\
+> **Descrição:** ID do úsuario
+
+### UName
+
+> **Tipo:** string | texto\
+> **Descrição:** Username do usuário
+
+### PName
+
+> **Tipo:** string | texto\
+> **Descrição:** Nome do usuário
+
+### Admin
+
+> **Tipo:** bool | comparação\
+> **Descrição:** Se o usuário está utilizando a senha de administrador
+
+### Total
+
+> **Tipo:** byte | número\
+> **Descrição:** Total de jogadores dentro do servidor
+
+### Remote
+
+> **Tipo:** bool | comparação\
+> **Descrição:** Se o usuário está conectado localmente ou remotamente

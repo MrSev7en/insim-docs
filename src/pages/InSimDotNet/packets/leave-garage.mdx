@@ -1,0 +1,197 @@
+import { Callout } from 'nextra-theme-docs'
+
+<Callout emoji="⭐">Nível de dificuldade: **Fácil**</Callout>
+
+<Callout type="warning">
+  É importante lembrar de seguir as etapas das [Conexões
+  locais](/InSimDotNet/concepts/local-connections) antes de prosseguir.
+</Callout>
+
+# Ao sair da garagem (IS_NPL)
+
+O pacote IS_NPL é referente à junção à pista, ou seja, sempre que um jogador sair da garagem e entrar na pista, a função responsável por lidar com esse pacote será ativada.
+
+Esse pacote é do tipo [**receptor**](/InSimDotNet/types#receptores), ele não pode enviar dados, apenas receber.
+
+## Antes de iniciar
+
+Dentro do Visual Studio crie uma pasta chamada "packets", e dentro dela crie um arquivo de classe chamado "IS_NPL".
+
+## Criando o manipulador
+
+No arquivo criado previamente, vamos criar uma função chamada "Hook" para injetarmos todo o código de recepção dentro dela.
+
+```csharp copy
+public static void Hook(InSim insim, IS_NPL npl)
+{
+    foreach (Connections conn in Connections._connections.Values)
+    {
+        if (conn.UCID == npl.UCID)
+        {
+            conn.PLID = npl.PLID;
+        }
+    }
+}
+```
+
+<Callout type="info">
+  Qualquer tipo de código que você quiser utilizar no pacote NPL deverá ser
+  colocado **depois** da variável definida acima `conn.PLID = npl.PLID;`, ou
+  caso contrário não irá funcionar corretamente.
+</Callout>
+
+### Para que serve o foreach nas conexões?
+
+Em todos os pacotes receptores, nós precisamos saber com qual jogador estamos lidando, há várias formas de verificar esse processo, porém o foreach é o mais convencional.
+
+Na situação acima o que acontece é que anteriormente não havíamos atribuído o ID do jogador à conexão do jogador, então não era possível utilizar de alguns tipos de pacotes específicos, que utilizam o ID do jogador ao invés do ID da conexão.
+
+Na maioria dos casos, é convencionalmente utilizado o ID de conexão, seja pra gerenciar o usuário em um banco de dados ou até mesmo para comparações diretas. Pois o ID do jogador é quase sempre invalidado ou alterado assim que o jogador sai da pista.
+
+Porém esse ID do jogador é sempre atribuído quando um jogador sai da garagem, por isso atribuímos ele dentro da função acima e colocamos todo o resto do código que precisamos, abaixo da variável que é definida.
+
+Por exemplo:
+
+```csharp copy
+public static void Hook(InSim insim, IS_NPL npl)
+{
+    foreach (Connections conn in Connections._connections.Values)
+    {
+        if (conn.UCID == npl.UCID)
+        {
+            conn.PLID = npl.PLID;
+
+            insim.Send($"/msg O usuário {conn.UName} tem o ID {conn.PLID}");
+            insim.Send($"/msg O ID de conexão dele é {conn.UCID}");
+        }
+    }
+}
+```
+
+O arquivo inteiro irá se assemelhar à esse:
+
+```csharp filename="packets/IS_NPL.cs" copy
+using InSimDotNet;
+using InSimDotNet.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    public class IS_NPL
+    {
+        public static void Hook(InSim insim, IS_NPL npl)
+        {
+            foreach (Connections conn in Connections._connections.Values)
+            {
+                if (conn.UCID == npl.UCID)
+                {
+                    conn.PLID = npl.PLID;
+
+                    insim.Send($"/msg O usuário {conn.UName} tem o ID {conn.PLID}");
+                    insim.Send($"/msg O ID de conexão dele é {conn.UCID}");
+                }
+            }
+        }
+    }
+}
+```
+
+Injete o pacote dentro do InSim, seguindo o mesmo processo de [Ao entrar no servidor](/InSimDotNet/packets/new-connection#injetando-o-pacote-ao-insim).
+
+## Referências da API
+
+Lista de propriedades retornadas pelo pacote.
+
+### UCID
+
+> **Tipo:** byte | número\
+> **Descrição:** ID da conexão
+
+### PLID
+
+> **Tipo:** byte | número\
+> **Descrição:** ID do jogador
+
+### PType
+
+> **Tipo:** [Tipos de jogador](/InSimDotNet/extensions/player-types)\
+> **Descrição:** Qual o tipo do jogador em questão
+
+### Flags
+
+> **Tipo:** [Flags do jogador](/InSimDotNet/extensions/player-flags)\
+> **Descrição:** Quais flags estão associadas ao jogador
+
+### PName
+
+> **Tipo:** string | texto\
+> **Descrição:** Nome do jogador
+
+### Plate
+
+> **Tipo:** string | texto\
+> **Descrição:** Placa do carro do jogador
+
+### CName
+
+> **Tipo:** string | texto\
+> **Descrição:** Nome do carro do jogador
+
+### SName
+
+> **Tipo:** string | texto\
+> **Descrição:** Nome da skin do carro do jogador
+
+### Tyres
+
+> **Tipo:** [Tipos dos pneus](/InSimDotNet/extensions/tyre-types)\
+> **Descrição:** Quais são os tipos dos pneus
+
+### H_Mass
+
+> **Tipo:** byte | número\
+> **Descrição:** Massa voluntária adicionada ao carro do jogador
+
+### H_TRes
+
+> **Tipo:** byte | número\
+> **Descrição:** Restrição de ingestão voluntária adicionada ao carro do jogador
+
+### Model
+
+> **Tipo:** byte | número\
+> **Descrição:** Modelo do jogador
+
+### Pass
+
+> **Tipo:** [Flags dos passageiros](/InSimDotNet/extensions/passenger-flags)\
+> **Descrição:** Quais flags estão associadas aos passageiros
+
+### RWAdj
+
+> **Tipo:** byte | número\
+> **Descrição:** Redução da largura do pneu (traseiro)
+
+### FWAdj
+
+> **Tipo:** byte | número\
+> **Descrição:** Redução da largura do pneu (dianteiro)
+
+### SetF
+
+> **Tipo:** [Flags do setup](/InSimDotNet/extensions/setup-flags)\
+> **Descrição:** Quais flags estão associadas ao setup do veículo
+
+### NumP
+
+> **Tipo:** byte | número\
+> **Descrição:** Número de jogadores na pista (zero se for uma solicitação para entrar na pista)
+
+### Config
+
+> **Tipo:** byte | número\
+> **Descrição:** Configuração do veículo (por exemplo UF1 = 1 `teto aberto`)

@@ -1,3 +1,9 @@
 {
-  "leave-reason": "Motivo de saída"
+  "leave-reason": "Motivo de saída",
+  "player-types": "Tipo de jogador",
+  "player-flags": "Flags do jogador",
+  "tyre-types": "Tipos dos pneus",
+  "tyre-compounds": "Compostos de pneus",
+  "passenger-flags": "Flags dos passageiros",
+  "setup-flags": "Flags do setup"
 }

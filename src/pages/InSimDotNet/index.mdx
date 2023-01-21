@@ -35,7 +35,7 @@ Dentro do Visual Studio, procure pelo arquivo "Program.cs", ele será o arquivo 
 
 Dentro dele provavelmente você encontrará um código semelhante à esse:
 
-```csharp
+```csharp filename="Program.cs" copy
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,14 +72,14 @@ Pronto! O módulo do InSimDotNet já está dentro do seu projeto, e está tudo p
 
 Importe o módulo do InSimDotNet para dentro do seu código, seguindo o exemplo:
 
-```csharp
+```csharp copy
 using InSimDotNet;
 // ... resto do código
 ```
 
 Chame a função de inicialização do InSimDotNet dentro do void Main, passando alguns parametros:
 
-```csharp
+```csharp copy
 InSim insim = new InSim();
 
 insim.Initialize(new InSimSettings {
@@ -99,7 +99,7 @@ insim.Send("/msg Hello, InSim!");
 
 Seu código final irá se assemelhar à esse:
 
-```csharp
+```csharp filename="Program.cs" copy
 using InSimDotNet;
 using System;
 using System.Collections.Generic;
@@ -115,14 +115,22 @@ namespace insim
         {
             InSim insim = new InSim();
 
-            insim.Initialize(new InSimSettings {
-                Host = "127.0.0.1",
-                Port = 29999,
-                Admin = "",
-            });
+            while (true) // Esse while true serve para manter o programa aberto.
+            {
+                if (!insim.IsConnected) // Essa comparação serve para verficar se o InSim já está conectado. Sem ela o seu InSim iria iniciar infinitas vezes.
+                {
+                    insim.Initialize(new InSimSettings {
+                        Host = "127.0.0.1",
+                        Port = 29999,
+                        Admin = "",
+                    });
 
-            insim.Send("/msg Hello, InSim!");
+                    insim.Send("/msg Hello, InSim!");
+                }
+            }
         }
     }
 }
 ```
+
+Pronto! Compile seu projeto e abra o arquivo gerado.

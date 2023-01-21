@@ -1,0 +1,92 @@
+import { Callout } from 'nextra-theme-docs'
+
+# Nova conexão (IS_NCN)
+
+O pacote IS_NCN é referente à uma nova conexão no servidor, ou seja, sempre que um jogador conectar-se ao servidor, a função responsável por lidar com esse pacote será chamada.
+
+Esse pacote é do tipo [**receptor**](/InSimDotNet/types#receptores), ele não pode enviar dados, apenas receber.
+
+## Antes de iniciar
+
+Dentro do Visual Studio crie uma pasta chamada "packets", e dentro dela crie um arquivo de classe chamado "IS_NCN".
+
+## Criando o manipulador
+
+No arquivo IS_NCN criado préviamente, vamos criar uma função chamada "Hook" para injetarmos todo o código de recepção dentro dela.
+
+```csharp copy
+public static void Hook(InSim insim, IS_NCN ncn)
+{
+    Console.WriteLine($"Nova conexão: {ncn.UName}");
+}
+```
+
+O arquivo inteiro irá se assemelhar à esse:
+
+```csharp filename="packets/IS_NCN.cs" copy
+using InSimDotNet;
+using InSimDotNet.Packets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    public class IS_NCN
+    {
+        public static void Hook(InSim insim, IS_NCN ncn)
+        {
+            Console.WriteLine($"Nova conexão: {ncn.UName}");
+        }
+    }
+}
+```
+
+O código acima não funcionará ainda, pois não injetamos ele ao componente principal do InSim.
+
+## Injetando o pacote ao InSim
+
+Voltando ao arquivo inicial "Program.cs", vamos colocar o seguinte código:
+
+```csharp copy
+insim.Bind<IS_NCN>(IS_NCN.Hook);
+```
+
+Ressaltando que o método **.Bind** serve para indicar ao InSimDotNet que estamos prontos para manipular o
+
+<Callout type="warning">
+  Você deve colocar o código acima **ANTES** do método **insim.Initialize**
+</Callout>
+
+Exemplo do código final:
+
+```csharp filename="Program.cs" copy
+namespace insim
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            InSim insim = new InSim();
+
+            while (true) // Esse while true serve para manter o programa aberto.
+            {
+                if (!insim.IsConnected) // Essa comparação serve para verficar se o InSim já está conectado. Sem ela o seu InSim iria iniciar infinitas vezes.
+                {
+                    insim.Bind<IS_NCN>(IS_NCN.Hook);
+
+                    insim.Initialize(new InSimSettings {
+                        Host = "127.0.0.1",
+                        Port = 29999,
+                        Admin = "",
+                    });
+
+                    insim.Send("/msg Hello, InSim!");
+                }
+            }
+        }
+    }
+}
+```

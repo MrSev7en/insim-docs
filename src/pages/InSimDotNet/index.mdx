@@ -1,0 +1,128 @@
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="info">
+  Essa documentação foi baseada na versão [2.3.2 do
+  InSimDotNet](https://github.com/alexmcbride/insimdotnet/releases/tag/v2.3.2)
+</Callout>
+
+# InSimDotNet
+
+InSimDotNet é uma livraria compatível com o protocolo do InSim.
+Ela permite a comunicação com o jogo, através do envio de [pacotes](/packets).
+
+Você pode conferir o repositório oficial dela [clicando aqui](https://github.com/alexmcbride/insimdotnet).
+
+## Criando seu primeiro InSim
+
+Primeiramente é necessário baixar e instalar o [Visual Studio](https://visualstudio.microsoft.com/pt-br/vs/community/).
+Ele será a [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) responsável pela codificação e criação do seu InSim.
+
+Após baixar o Visual Studio Installer (disponibilizado pelo link acima), ele será o instalador responsável por gerenciar a instação da IDE, e dos pacotes que à complementam.
+
+Ao abrir, quando perguntado sobre escolher as "Cargas de trabalho", selecione "Desenvolvimento para desktop com .NET", e clique em "Instalar".
+
+Após a instalação, abra o Visual Studio e crie um novo projeto.
+Procure pela opção "Aplicação de Console (.NET Framework)", selecione o diretório do projeto e escolha a versão do .NET Framework.
+
+<Callout type="warning">
+  É importante que a versão do .NET Framework escolhida para o projeto seja a
+  4.5 ou acima.
+</Callout>
+
+## Após a criação do projeto
+
+Dentro do Visual Studio, procure pelo arquivo "Program.cs", ele será o arquivo responsável pelo código inicial do seu InSim.
+
+Dentro dele provavelmente você encontrará um código semelhante à esse:
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+        }
+    }
+}
+```
+
+<Callout type="warning">
+  É importante ter um conhecimento mínimo em [C#
+  (c-sharp)](https://en.wikipedia.org/wiki/C_Sharp_(programming_language)) antes
+  de continuar o processo de criação do InSim.
+</Callout>
+
+Vamos começar adicionando o módulo do InSimDotNet, você pode baixar o zip [clicando aqui](https://github.com/alexmcbride/insimdotnet/releases/tag/v2.3.2).
+
+Após baixar, extraia o arquivo InSimDotNet.dll para dentro da pasta do seu projeto (em qualquer pasta dentro do seu projeto).
+
+Importe o módulo dentro do Visual Studio através do botão "Projeto" -> "Adicionar Referência" -> "Pequisar", escolha o arquivo que você baixou e clique em "OK".
+
+Pronto! O módulo do InSimDotNet já está dentro do seu projeto, e está tudo pronto para seguir para a próxima etapa.
+
+## Inicializando o InSim
+
+Importe o módulo do InSimDotNet para dentro do seu código, seguindo o exemplo:
+
+```csharp
+using InSimDotNet;
+// ... resto do código
+```
+
+Chame a função de inicialização do InSimDotNet dentro do void Main, passando alguns parametros:
+
+```csharp
+InSim insim = new InSim();
+
+insim.Initialize(new InSimSettings {
+    Host = "127.0.0.1",
+    Port = 29999,
+    Admin = "",
+});
+
+insim.Send("/msg Hello, InSim!");
+```
+
+**Host** é o endereço IP do servidor em que você quer iniciar o InSim.
+
+**Port** é a porta do InSim para conexão (a porta do InSim não é a mesma porta que você utiliza para ligar o servidor, geralmente ela é a porta 29999).
+
+**Admin** é a senha de administrador do servidor, esse campo não é opcional caso o seu servidor possua senha de administrador.
+
+Seu código final irá se assemelhar à esse:
+
+```csharp
+using InSimDotNet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace insim
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            InSim insim = new InSim();
+
+            insim.Initialize(new InSimSettings {
+                Host = "127.0.0.1",
+                Port = 29999,
+                Admin = "",
+            });
+
+            insim.Send("/msg Hello, InSim!");
+        }
+    }
+}
+```
